@@ -1,30 +1,272 @@
 <!DOCTYPE html>
-<html lang = "en">
-    <head>
-        <title> MBBS | CGPA Tracker</title>
-        <meta name = "author" content = "Jashwendra">
-        <meta name = "description" content = "AIMST MBBS CGPA Tracker : Testing Website">
-        <meta name = "viewport" content = "intial-scale = 1.0 ; width = device-width"
-        <meta charset = "UTF-8">
-        <link rel = "stylesheet" href = "style.css">
-    </head>
-    <body>
-        <header>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Preclinical CGPA Tracker</title>
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- LOCAL SUPABASE UMD DRIVER -->
+  <script src="supabase.js"></script>
+</head>
+<body>
 
-        </header>
-        <main class = "dashboard-container"> 
-            <h1 class="dashboard-title">Dashboard</h1>
-            <hr class="title-divider">
-            <h3 class="user-greeting">Welcome back, user!</h3>
-            <h3 class="progress-heading"><span class="highlight-yellow">Progress</span></h3>
+  <!-- AUTHENTICATION MODAL OVERLAY -->
+  <div id="auth-overlay" class="auth-overlay">
+    <div class="auth-card">
+      <h2 id="auth-title">Student Access Portal</h2>
+      <p id="auth-subtitle">Sign in or create an account to start tracking your preclinical scores.</p>
+      
+      <form id="auth-form" onsubmit="event.preventDefault();">
+        <div class="input-group" id="username-group">
+          <label for="auth-username">Student Username / Display Name</label>
+          <input type="text" id="auth-username" placeholder="Dr. House">
+        </div>
 
-            <!-- Temporary Placeholder for Data Testing -->
-            <div class="mock-card">
-                <p>Placeholder: Current Weighted Progress Metrics Will Load Here</p>
+        <div class="input-group">
+          <label for="auth-email">Medical Student Email</label>
+          <input type="email" id="auth-email" required placeholder="somethingcool@gmail.com">
+        </div>
+        
+        <div class="input-group">
+          <label for="auth-password">Password</label>
+          <input type="password" id="auth-password" required minlength="6" placeholder="••••••••">
+        </div>
+
+        <div class="auth-actions">
+          <button type="button" id="btn-login" class="btn-primary">Sign In</button>
+          <button type="button" id="btn-signup" class="btn-secondary">Sign Up</button>
+        </div>
+      </form>
+      <div id="auth-status" class="auth-status-message"></div>
+    </div>
+  </div>
+
+  <!-- FULL-WIDTH TOP NAVIGATION BAR WRAPPER -->
+  <header class="top-navbar">
+    <div class="nav-content-flex">
+      <div class="header-branding">
+        <h1 class="dashboard-title">DASHBOARD</h1>
+        <h3 class="user-greeting" id="user-display">Welcome back, <span id="user-email-label">Guest</span>!</h3>
+      </div>
+      <button type="button" id="btn-logout" class="btn-logout" style="display: none;">Sign Out</button>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD CONTENT CONTAINER -->
+  <main class="dashboard-container">
+    
+    <div class="progress-header-flex">
+      <h3 class="progress-heading"><span class="highlight-accent">> Made for AIMST MBBS students</span></h3>
+    </div>
+
+    <!-- PRECLINICAL SECTION -->
+    <section class="tracker-section">
+      <h2 class="section-title">
+        <span class="badge badge-preclinical">A | Preclinical</span>
+      </h2>
+
+      <form id="preclinical-form" onsubmit="event.preventDefault();">
+        <div class="tab-layout">
+
+          <!-- LEFT SIDEBAR -->
+          <nav class="system-nav" aria-label="System Selection">
+            <button type="button" class="nav-btn active" data-target="overview">Overview 📊</button>
+            <button type="button" class="nav-btn" data-target="ihs">Immunology & Hem. 🩸</button>
+            <button type="button" class="nav-btn" data-target="mss">Musculoskeletal 🦴</button>
+            <button type="button" class="nav-btn" data-target="cvs">Cardiovascular ❤️</button>
+            <button type="button" class="nav-btn" data-target="rs">Respiratory 🫁</button>
+            <button type="button" class="nav-btn" data-target="git">Gastrointestinal 🩺</button>
+            <button type="button" class="nav-btn" data-target="nvs">Nervous 🧠</button>
+            <button type="button" class="nav-btn" data-target="ers">Endocrine & Repro. 🧬</button>
+            <button type="button" class="nav-btn" data-target="renal">Renal 🧪</button>
+          </nav>
+
+          <!-- RIGHT PANEL -->
+          <div class="tab-content">
+
+            <!-- 0. OVERVIEW PANEL -->
+            <div class="system-panel active-panel" id="panel-overview">
+              <div class="overview-container">
+                <div class="overview-header">
+                  <h4>Overview</h4>
+                  <p> Your academic progress for Professional Exam 1. Input your marks for all the available systems, then hit the save button below.</p>
+                </div>
+
+                <div class="metric-stack">
+                  <!-- 1 | Theory -->
+                  <div class="metric-card">
+                    <div class="metric-title">1 | Theory</div>
+                    <div class="metric-body">
+                      <span class="metric-label">Accumulated Marks:</span>
+                      <span class="metric-value">
+                        <strong data-target="theory-score">0.00</strong> 
+                        <span class="metric-cap">/ 30.00%</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- 2 | Practical -->
+                  <div class="metric-card">
+                    <div class="metric-title">2 | Practical</div>
+                    <div class="metric-body">
+                      <span class="metric-label">Accumulated Marks:</span>
+                      <span class="metric-value">
+                        <strong data-target="practical-score">0.00</strong> 
+                        <span class="metric-cap">/ 10.00%</span>
+                      </span>
+                    </div>
+                  </div>
+
+                  <!-- 3 | Total -->
+                  <div class="metric-card total-card">
+                    <div class="metric-title">3 | Total </div>
+                    <div class="metric-body">
+                      <span class="metric-label">Accumulated Marks:</span>
+                      <span class="metric-value">
+                        <strong data-target="total-score">0.00</strong> 
+                        <span class="metric-cap">/ 40.00%</span>
+                      </span>
+                    </div>
+                    <div class="metric-body divider-top">
+                      <span class="metric-label">Marks Needed to Pass (50% Target Threshold):</span>
+                      <span class="metric-value">
+                        <strong id="display-pass-needed" class="highlight-pass">20.00%</strong>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- MASTER SAVE BUTTON CONTAINER (CENTERED) -->
+                <div class="save-button-wrapper">
+                  <button type="button" id="btn-save-all" class="save-btn">Save </button>
+                  <span id="save-status"></span>
+                </div>
+              </div>
             </div>
-        </main>
-        <footer>
 
-        </footer>
-    </body>
+            <!-- 1. IHS -->
+            <div class="system-panel" id="panel-ihs">
+              <div class="panel-header"><h4>Immunology & Hematology 🩸</h4></div>
+              <div class="input-group">
+                <label for="ihs_theory">Theory Score (%)</label>
+                <input type="number" id="ihs_theory" name="ihs_theory" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+              <div class="input-group">
+                <label for="ihs_practical">Practical Score (%)</label>
+                <input type="number" id="ihs_practical" name="ihs_practical" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+            </div>
+
+            <!-- 2. MSS -->
+            <div class="system-panel" id="panel-mss">
+              <div class="panel-header"><h4>Musculoskeletal 🦴</h4></div>
+              <div class="input-group">
+                <label for="mss_theory">Theory Score (%)</label>
+                <input type="number" id="mss_theory" name="mss_theory" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+              <div class="input-group">
+                <label for="mss_practical">Practical Score (%)</label>
+                <input type="number" id="mss_practical" name="mss_practical" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+            </div>
+
+            <!-- 3. CVS -->
+            <div class="system-panel" id="panel-cvs">
+              <div class="panel-header"><h4>Cardiovascular ❤️</h4></div>
+              <div class="input-group">
+                <label for="cvs_theory">Theory Score (%)</label>
+                <input type="number" id="cvs_theory" name="cvs_theory" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+              <div class="input-group">
+                <label for="cvs_practical">Practical Score (%)</label>
+                <input type="number" id="cvs_practical" name="cvs_practical" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+            </div>
+
+            <!-- 4. RS -->
+            <div class="system-panel" id="panel-rs">
+              <div class="panel-header"><h4>Respiratory 🫁</h4></div>
+              <div class="input-group">
+                <label for="rs_theory">Theory Score (%)</label>
+                <input type="number" id="rs_theory" name="rs_theory" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+              <div class="input-group">
+                <label for="rs_practical">Practical Score (%)</label>
+                <input type="number" id="rs_practical" name="rs_practical" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+            </div>
+
+            <!-- 5. GIT -->
+            <div class="system-panel" id="panel-git">
+              <div class="panel-header"><h4>Gastrointestinal 🩺</h4></div>
+              <div class="input-group">
+                <label for="git_theory">Theory Score (%)</label>
+                <input type="number" id="git_theory" name="git_theory" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+              <div class="input-group">
+                <label for="git_practical">Practical Score (%)</label>
+                <input type="number" id="git_practical" name="git_practical" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+            </div>
+
+            <!-- 6. NVS -->
+            <div class="system-panel" id="panel-nvs">
+              <div class="panel-header"><h4>Nervous 🧠</h4></div>
+              <div class="input-group">
+                <label for="nvs_theory">Theory Score (%)</label>
+                <input type="number" id="nvs_theory" name="nvs_theory" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+              <div class="input-group">
+                <label for="nvs_practical">Practical Score (%)</label>
+                <input type="number" id="nvs_practical" name="nvs_practical" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+            </div>
+
+            <!-- 7. ERS -->
+            <div class="system-panel" id="panel-ers">
+              <div class="panel-header"><h4>Endocrine & Reproductive 🧬</h4></div>
+              <div class="input-group">
+                <label for="ers_theory">Theory Score (%)</label>
+                <input type="number" id="ers_theory" name="ers_theory" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+              <div class="input-group">
+                <label for="ers_practical">Practical Score (%)</label>
+                <input type="number" id="ers_practical" name="ers_practical" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+            </div>
+
+            <!-- 8. RENAL -->
+            <div class="system-panel" id="panel-renal">
+              <div class="panel-header"><h4>Renal 🧪</h4></div>
+              <div class="input-group">
+                <label for="renal_theory">Theory Score (%)</label>
+                <input type="number" id="renal_theory" name="renal_theory" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+              <div class="input-group">
+                <label for="renal_practical">Practical Score (%)</label>
+                <input type="number" id="renal_practical" name="renal_practical" min="0" max="100" step="0.01" placeholder="0 - 100">
+              </div>
+            </div>
+
+          </div> <!-- /tab-content -->
+        </div> <!-- /tab-layout -->
+      </form>
+    </section>
+
+    <!-- CLINICAL SECTION -->
+    <section class="tracker-section">
+      <h2 class="section-title">
+        <span class="badge badge-clinical">B | Clinical</span>
+      </h2>
+      <div class="coming-soon-card">
+        <h3>Coming soon!</h3>
+        <p>Under development.</p>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
 </html>

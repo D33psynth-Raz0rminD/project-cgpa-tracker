@@ -1,65 +1,474 @@
-/* Global Reset & Base Layout Physics */
+/* ==========================================================================
+   1. GLOBAL RESET & DESIGN SYSTEM TOKENS
+   ========================================================================== */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+:root {
+  /* Theme Palette Mapping */
+  --bg-main: #fff5ee;         /* Primary Warm Page Background */
+  --nav-bg: #2b4162;         /* Dark Slate / Navy Header & Base Nav */
+  --accent-amber: #fa9f42;   /* Active State & Warning Accent */
+  --accent-green: #0b6e4f;   /* Badges & Positive Indicators */
+  --accent-crimson: #721817; /* High-Contrast Destructive Action */
+  --subdued-gray: #e0e0e2;   /* Structural Borders & Subdued Text */
+  --text-dark: #1a1a1a;
+  --text-light: #ffffff;
+}
+
 body {
-  background-color: #fff5ee; /* Light Peach Base */
-  color: #000000; /* Pure Black Text */
+  background-color: var(--bg-main);
+  color: var(--text-dark);
   font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
   line-height: 1.5;
-  padding: clamp(1rem, 4vw, 2.5rem);
+  min-height: 100vh;
 }
 
-/* Main Dashboard Shell */
-.dashboard-container {
-  max-width: 900px;
+/* ==========================================================================
+   2. FULL-WIDTH TOP NAVIGATION BAR
+   ========================================================================== */
+.top-navbar {
+  width: 100%;
+  background-color: var(--nav-bg);
+  color: var(--text-light);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-bottom: 3px solid var(--accent-amber);
+}
+
+.nav-content-flex {
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 1.25rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* Header & Line Divider */
 .dashboard-title {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  color: var(--text-light);
 }
 
-.title-divider {
-  border: 0;
-  height: 1px;
-  background-color: #000000;
-  margin-top: 0.5rem;
-  margin-bottom: 1.5rem; /* Replaces manual <br> tags with semantic spacing */
-  opacity: 0.2;
-}
-
-/* Subheadings */
 .user-greeting {
-  font-size: 1.25rem;
-  font-weight: 500;
-  margin-bottom: 2rem; /* Replaces two manual <br> tags */
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--subdued-gray);
+  margin-top: 0.25rem;
+}
+
+.user-greeting span {
+  color: var(--accent-amber);
+  font-weight: 600;
+}
+
+.btn-logout {
+  background-color: var(--accent-crimson);
+  color: var(--text-light);
+  border: none;
+  padding: 0.55rem 1.1rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s ease, transform 0.1s ease;
+}
+
+.btn-logout:hover {
+  background-color: #581211;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   3. MAIN DASHBOARD & SECTION LAYOUTS
+   ========================================================================== */
+.dashboard-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1.5rem;
+}
+
+.progress-header-flex {
+  margin-bottom: 1.5rem;
 }
 
 .progress-heading {
   font-size: 1.25rem;
-  font-weight: 400;
-}
-
-/* Yellow Highlight Anchor */
-.highlight-yellow {
-  background-color: #fef08a; /* Soft gold-yellow for clean contrast on peach */
   font-weight: 700;
-  padding: 0.15em 0.4em;
-  border-radius: 4px;
 }
 
-/* Mock Card Component (Temporary) */
-.mock-card {
-  margin-top: 1rem;
-  padding: 1rem;
+.highlight-accent {
+  color: var(--nav-bg);
+  border-bottom: 3px solid var(--accent-amber);
+  padding-bottom: 0.1em;
+}
+
+.tracker-section {
+  margin-bottom: 3rem;
+}
+
+.section-title {
+  margin-bottom: 1.25rem;
+}
+
+.badge {
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 0.35em 0.85em;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.badge-preclinical {
+  background-color: var(--accent-green);
+  color: var(--text-light);
+}
+
+.badge-clinical {
+  background-color: #e2e8f0;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+/* ==========================================================================
+   4. DESKTOP SPLIT-SCREEN & UNIFIED SIDEBAR NAV
+   ========================================================================== */
+.tab-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.system-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nav-btn {
+  background-color: var(--nav-bg);
+  color: var(--text-light);
+  border: 1px solid transparent;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+}
+
+.nav-btn:hover {
+  background-color: #3b5985;
+}
+
+.nav-btn.active {
+  background-color: var(--accent-amber);
+  color: var(--text-dark);
+  font-weight: 700;
+  border-color: #d9822b;
+  box-shadow: 0 2px 6px rgba(250, 159, 66, 0.3);
+}
+
+/* ==========================================================================
+   5. RIGHT PANEL & SCORE INPUT CARDS
+   ========================================================================== */
+.tab-content {
   background-color: #ffffff;
   border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 1.5rem;
+  min-height: 250px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.system-panel {
+  display: none;
+}
+
+.system-panel.active-panel {
+  display: block;
+}
+
+.panel-header h4 {
+  font-size: 1.1rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 0.5rem;
+  color: var(--nav-bg);
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+
+.input-group label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.input-group input {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
+  font-size: 0.95rem;
+  transition: border-color 0.15s ease;
+}
+
+.input-group input:focus {
+  outline: none;
+  border-color: var(--nav-bg);
+  box-shadow: 0 0 0 3px rgba(43, 65, 98, 0.1);
+}
+
+/* ==========================================================================
+   6. OVERVIEW METRICS ENGINE
+   ========================================================================== */
+.overview-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.overview-header h4 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+  color: var(--nav-bg);
+}
+
+.overview-header p {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.metric-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.metric-card {
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+}
+
+.metric-card.total-card {
+  background-color: #ffffff;
+  border: 2px solid var(--nav-bg);
+}
+
+.metric-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--nav-bg);
+  margin-bottom: 0.75rem;
+}
+
+.metric-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+}
+
+.metric-body.divider-top {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed #e5e7eb;
+}
+
+.metric-label {
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.metric-value {
+  font-size: 1.1rem;
+}
+
+.metric-value strong {
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.metric-cap {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-left: 0.2rem;
+}
+
+.highlight-pass {
+  color: var(--accent-crimson);
+}
+
+/* CENTERED SAVE BUTTON WRAPPER */
+.save-button-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5rem;
+  width: 100%;
+}
+
+.save-btn {
+  background-color: var(--nav-bg);
+  color: var(--text-light);
+  border: none;
+  padding: 0.75rem 1.75rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.1s ease, background-color 0.15s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.save-btn:hover {
+  background-color: var(--accent-green);
+  transform: translateY(-1px);
+}
+
+.save-btn:active {
+  transform: translateY(0);
+}
+
+#save-status {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-align: center;
+  min-height: 1.25rem;
+}
+
+.coming-soon-card {
+  background-color: #ffffff;
+  border: 2px dashed #cbd5e1;
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  color: #64748b;
+}
+
+/* ==========================================================================
+   7. AUTHENTICATION MODAL OVERLAY
+   ========================================================================== */
+.auth-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                    url('background.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.auth-card {
+  background-color: rgba(255, 255, 255, 0.95);
+  padding: 2.5rem;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 420px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.auth-card h2 {
+  font-size: 1.4rem;
+  margin-bottom: 0.5rem;
+  color: var(--nav-bg);
+}
+
+.auth-card p {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.auth-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.btn-primary {
+  flex: 1;
+  background-color: var(--nav-bg);
+  color: var(--text-light);
+  border: none;
+  padding: 0.65rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  flex: 1;
+  background-color: #f3f4f6;
+  color: #1f2937;
+  border: 1px solid #d1d5db;
+  padding: 0.65rem;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-status-message {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
+/* ==========================================================================
+   8. MOBILE RESPONSIVE ADAPTATION
+   ========================================================================== */
+@media (max-width: 768px) {
+  .nav-content-flex {
+    padding: 1rem 1.25rem;
+  }
+
+  .dashboard-container {
+    padding: 0 1rem;
+    margin: 1.5rem auto;
+  }
+
+  .tab-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .system-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .nav-btn {
+    flex: 0 0 auto;
+    font-size: 0.85rem;
+    padding: 0.5rem 0.85rem;
+  }
 }
