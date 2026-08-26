@@ -1,0 +1,65 @@
+/* Global Reset & Base Layout Physics */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #fff5ee; /* Light Peach Base */
+  color: #000000; /* Pure Black Text */
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.5;
+  padding: clamp(1rem, 4vw, 2.5rem);
+}
+
+/* Main Dashboard Shell */
+.dashboard-container {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Header & Line Divider */
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.title-divider {
+  border: 0;
+  height: 1px;
+  background-color: #000000;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem; /* Replaces manual <br> tags with semantic spacing */
+  opacity: 0.2;
+}
+
+/* Subheadings */
+.user-greeting {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: 2rem; /* Replaces two manual <br> tags */
+}
+
+.progress-heading {
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+
+/* Yellow Highlight Anchor */
+.highlight-yellow {
+  background-color: #fef08a; /* Soft gold-yellow for clean contrast on peach */
+  font-weight: 700;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+}
+
+/* Mock Card Component (Temporary) */
+.mock-card {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+}
